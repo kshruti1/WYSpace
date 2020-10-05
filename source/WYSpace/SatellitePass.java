@@ -1,5 +1,5 @@
 package WYSpace;
-
+import WYSpace.ResultFrame;
 
 import java.awt.EventQueue;
 import javax.swing.JFrame;
@@ -8,15 +8,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.NumberFormatter;
-
+import javax.swing.text.MaskFormatter;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.NumberFormat;
+import java.text.ParseException;
 import java.time.LocalTime;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
@@ -26,8 +25,6 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.ComponentOrientation;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class SatellitePass {
 
@@ -42,17 +39,15 @@ public class SatellitePass {
 
 	public SatellitePass() {
 
-		initialize();
 		this.openFileChooser = new JFileChooser();
-		openFileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-		openFileChooser.setFileFilter(new FileNameExtensionFilter("Text File", "txt"));
+		initialize();
+		
 	}
 
 	/*
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		int maxValue = 100;
 		frame = new JFrame();
 		JFrame messageFrame = new JFrame();
 		frame.getContentPane().setMaximumSize(new Dimension(1000, 1000));
@@ -73,29 +68,22 @@ public class SatellitePass {
 		lblWySpaceExcercise.setBounds(39, 11, 356, 27);
 		frame.getContentPane().add(lblWySpaceExcercise);
 
-		// accepting only integer input
-		NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
-		formatter.setValueClass(Integer.class);
-		formatter.setMinimum(0);
-		formatter.setMaximum(maxValue);
-		formatter.setAllowsInvalid(false);
-		
-		// If you want the value to be committed on each keystroke instead of focus lost
-		//formatter.setCommitsOnValidEdit(true);
+		// accepting only 2 digit integer input 
 
-		txtInputBandwidth = new JFormattedTextField(formatter);
-		txtInputBandwidth.addKeyListener(new KeyAdapter() {
-			
-			
-			@Override
-			public void keyTyped(KeyEvent e) {
-				if (e.getKeyChar() == e.VK_BACK_SPACE) {
-					
-					txtInputBandwidth.setText("");
-				}
-			}
-		});
-		txtInputBandwidth.setToolTipText("Enter bandwidth in integer.");
+		    MaskFormatter formatter1 = null;
+		   try {
+			formatter1 = new MaskFormatter("##");
+		} catch (ParseException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		 
+
+		txtInputBandwidth = new JFormattedTextField(formatter1) ;
+
+		txtInputBandwidth.setToolTipText("Bandwidth in integer.");
+		
+	    
 		txtInputBandwidth.setMaximumSize(new Dimension(50, 50));
 		txtInputBandwidth.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		txtInputBandwidth.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
@@ -117,6 +105,11 @@ public class SatellitePass {
 		txtFilePath.setBounds(194, 141, 102, 20);
 		frame.getContentPane().add(txtFilePath);
 		txtFilePath.setColumns(10);
+		
+		
+		openFileChooser.setAcceptAllFileFilterUsed(false);
+		openFileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		openFileChooser.setFileFilter(new FileNameExtensionFilter("Text File", "txt"));
 
 		JButton btnSearch = new JButton("Open File..");
 		btnSearch.addActionListener(new ActionListener() {
@@ -126,6 +119,7 @@ public class SatellitePass {
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
 
 					filePath = openFileChooser.getSelectedFile();
+				
 
 					txtFilePath.setText(filePath.getPath());
 					// JOptionPane.showMessageDialog(messageFrame,"Failed to load selected text
@@ -208,6 +202,7 @@ public class SatellitePass {
 		frame.getContentPane().add(btnExit);
 	}
 
+	
 	static StringBuilder appendResult(optimalTime[] bestPass, StringBuilder stringResult) {
 
 		if (bestPass.length != 0) {

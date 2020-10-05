@@ -28,7 +28,7 @@ public class ResultFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ResultFrame frame = new ResultFrame(null);
+					ResultFrame frame = new ResultFrame();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -72,4 +72,8 @@ public class ResultFrame extends JFrame {
 		
 		
 			}
+
+	public ResultFrame() {
+		// TODO Auto-generated constructor stub
+	}
 }
